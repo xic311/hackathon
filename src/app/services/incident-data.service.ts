@@ -4,15 +4,14 @@ import { Observable, from } from 'rxjs';
 
 export interface IncidentData {
   id: string;
-  category: 'image' | 'audio';
+  category: 'image' | 'audio' | 'text';
   tags: ('fire' | 'people' | 'rescue')[];
   location: [number, number, number];
   time: string;
   rank: number;
 }
 
-function generateFakeData() {
-  const n = Math.round(Math.random() * 20);
+function generateFakeData(n: number) {
   const lon1 = -117.2;
   const lon2 = -116.8;
   const lat1 = 32.6;
@@ -44,6 +43,30 @@ export class IncidentDataService {
   constructor(public http: HttpClient) { }
 
   getData(): Observable<IncidentData[]> {
-    return from([generateFakeData()]);
+    return from([generateFakeData(10)]);
+  }
+
+  getData1(): Observable<IncidentData[]> {
+    const data = generateFakeData(1)[0];
+    data.category = 'audio';
+    data.tags = ['fire'];
+
+    return from([[data]]);
+  }
+
+  getData2(): Observable<IncidentData[]> {
+    const data = generateFakeData(1)[0];
+    data.category = 'text';
+    data.tags = ['fire'];
+
+    return from([[data]]);
+  }
+
+  getData3(): Observable<IncidentData[]> {
+    const data = generateFakeData(1)[0];
+    data.category = 'image';
+    data.tags = ['rescue'];
+
+    return from([[data]]);
   }
 }

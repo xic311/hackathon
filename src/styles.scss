@@ -17,7 +17,17 @@ body {
   width: 30px;
   height: 30px;
   cursor: pointer;
+  border: solid black 1px;
 }
+
+.marker.emergency {
+  width: 40px;
+  height: 40px;
+  z-index: 1;
+  cursor: pointer;
+  border: solid red 2px;
+}
+
 
 div.title {
   margin: 2px;

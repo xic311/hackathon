@@ -11,6 +11,7 @@ import { interval } from 'rxjs';
 })
 export class PageMapComponent implements OnInit, AfterViewInit {
   map: L.Map;
+  data = [] as any;
 
   constructor(private incidentData: IncidentDataService) { }
 
@@ -27,41 +28,57 @@ export class PageMapComponent implements OnInit, AfterViewInit {
         center: [-117.1611, 32.7157],
         zoom: 10
       });
-      this.updateData();
-      interval(10000).subscribe(() => {
-        console.log('updating');
+      setTimeout(() => {
+        this.incidentData.getData1().subscribe(d => this.addData(d));
+      }, 5000);
+      setTimeout(() => {
+        this.incidentData.getData2().subscribe(d => this.addData(d));
+      }, 10000);
+      setTimeout(() => {
+        this.incidentData.getData3().subscribe(d => this.addData(d));
+      }, 15000);
+      setTimeout(() => {
         this.updateData();
-      });
+      }, 20000);
     });
   }
 
-  updateData() {
-    this.incidentData.getData().subscribe(data => {
-      $('div.marker').remove();
+  addData(data) {
+    $('div.marker').remove();
+    this.data.push(...data);
 
-      data.map(d => {
-        let imgUrl = '';
-        if (d.tags[0] === 'fire') {
-          imgUrl = 'assets/flame.png';
-        } else if (d.tags[0] === 'rescue') {
-          imgUrl = 'assets/hospital.png';
-        }
+    this.data.map(d => {
+      let imgUrl = '';
+      if (d.tags[0] === 'fire') {
+        imgUrl = 'assets/flame.png';
+      } else if (d.tags[0] === 'rescue') {
+        imgUrl = 'assets/hospital.png';
+      }
 
-        const $el = $('<div>')
-          .addClass('marker')
-          .append(
+      const $el = $('<div>')
+        .addClass('marker')
+        .append(
           $('<img>')
             .attr('src', imgUrl)
             .css('height', '100%')
             .css('width', '100%')
-          ).on('click', () => {
-            this.showInfo(d);
-          });
+        ).on('click', () => {
+          this.showInfo(d);
+        });
+      if (d.rank > 3) {
+        $el.addClass('emergency');
+      }
 
-        return new L.Marker($el[0])
-          .setLngLat([d.location[0], d.location[1]])
-          .addTo(this.map);
-      });
+      return new L.Marker($el[0])
+        .setLngLat([d.location[0], d.location[1]])
+        .addTo(this.map);
+    });
+
+  }
+
+  updateData() {
+    this.incidentData.getData().subscribe(data => {
+      this.addData(data);
     });
   }
 
