@@ -1,2 +1,2 @@
 # hackathon
-Other files in the 'uin' Branch
+Other files in the 'ui' Branch
